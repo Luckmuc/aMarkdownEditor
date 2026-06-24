@@ -10,11 +10,38 @@ function previewUpdate() {
     preview.innerHTML = html;
 }
 
-function renderMarkdown() {
-    return text;
+function renderMarkdown(text) {
+
+    const lines = text.split("\n");
+
+    const htmllines = lines.map(line => {
+
+        if (line.startsWith("# ")) {
+            const content = line.slice(2);
+            return `<h1>${content}</h1>`
+        }
+
+        if (line.startsWith("## ")) {
+            const content = line.slice(3);
+            return `<h2>${content}</h2>`
+        }
+
+        if (line.startsWith("### ")) {
+            const content = line.slice(4);
+            return `<h3>${content}</h3>`
+        }
+
+        if (line.trim() === "") {
+            return "";
+        }
+
+        return `<p>${line}</p>`;
+    });
+
+    return htmllines.join("\n");
 }
 
 editor.addEventListener("input", previewUpdate);
+editor.addEventListener("input", renderMarkdown);
 
 previewUpdate();
-
