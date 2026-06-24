@@ -1,6 +1,8 @@
 const editor = document.getElementById("editor");
 const preview = document.getElementById("preview");
 
+editor.value = "";
+
 function previewUpdate() {
     const text = editor.value;
 
@@ -10,3 +12,8 @@ function previewUpdate() {
 editor.addEventListener("input", previewUpdate);
 
 previewUpdate();
+
+
+
+
+
