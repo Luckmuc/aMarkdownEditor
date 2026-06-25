@@ -13,6 +13,24 @@ function previewUpdate() {
 function renderMarkdown(text) {
 
     const lines = text.split("\n");
+    let html ="";
+    let inlist = false;
+
+    for (const line of lines) {
+        if (line.startsWith("- ")) {
+            if (!inlist) {
+                html += "<ul>";
+                inlist = true;
+            }
+            html += `<li>${parseInline(line.slice(2))}</li>`;
+            continue;
+        }
+    }
+
+    if (inlist) {
+        html += "</ul>";
+        inlist = false;
+    }
 
     const htmllines = lines.map(line => {
 
@@ -32,12 +50,11 @@ function renderMarkdown(text) {
         }
 
         if (line.trim() === "") {
-            return "";
+            return "<br />";
         }
 
         return `<p>${inlineDesigns(line)}</p>`;
     });
-
     return htmllines.join("\n");
 }
 
