@@ -5,57 +5,51 @@ editor.value = "";
 preview.textContent = "";
 
 function previewUpdate() {
-    const text = editor.value;
-    const html = renderMarkdown(text)
-    preview.innerHTML = html;
+  const text = editor.value;
+  const html = renderMarkdown(text);
+  preview.innerHTML = html;
 }
 
+
 function renderMarkdown(text) {
+  const lines = text.split("\n");
+  let html = "";
+  let inList = false;
 
-    const lines = text.split("\n");
-    let html ="";
-    let inlist = false;
-
-    for (const line of lines) {
-        if (line.startsWith("- ")) {
-            if (!inlist) {
-                html += "<ul>";
-                inlist = true;
-            }
-            html += `<li>${parseInline(line.slice(2))}</li>`;
-            continue;
-        }
+  for (const line of lines) {
+    if (line.startsWith("- ")) {
+      if (!inList) {
+        html += "<ul>";
+        inList = true;
+      }
+      const itemText = line.slice(2);
+      html += `<li>${inlineDesigns(itemText)}</li>`;
+      continue;
     }
 
-    if (inlist) {
-        html += "</ul>";
-        inlist = false;
+    if (inList) {
+      html += "</ul>";
+      inList = false;
     }
 
-    const htmllines = lines.map(line => {
+    if (line.startsWith("### ")) {
+      html += `<h3>${inlineDesigns(line.slice(4))}</h3>`;
+    } else if (line.startsWith("## ")) {
+      html += `<h2>${inlineDesigns(line.slice(3))}</h2>`;
+    } else if (line.startsWith("# ")) {
+      html += `<h1>${inlineDesigns(line.slice(2))}</h1>`;
+    } else if (line.trim() === "") {
+      html += "<br />";
+    } else {
+      html += `<p>${inlineDesigns(line)}</p>`;
+    }
+  }
 
-        if (line.startsWith("# ")) {
-            const content = inlineDesigns(line.slice(2));
-            return `<h1>${content}</h1>`
-        }
+  if (inList) {
+    html += "</ul>";
+  }
 
-        if (line.startsWith("## ")) {
-            const content = inlineDesigns(line.slice(3));
-            return `<h2>${content}</h2>`
-        }
-
-        if (line.startsWith("### ")) {
-            const content = inlineDesigns(line.slice(4));
-            return `<h3>${content}</h3>`
-        }
-
-        if (line.trim() === "") {
-            return "<br />";
-        }
-
-        return `<p>${inlineDesigns(line)}</p>`;
-    });
-    return htmllines.join("\n");
+  return html;
 }
 
 function inlineDesigns(text) {
