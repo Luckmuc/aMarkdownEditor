@@ -1,5 +1,6 @@
 const editor = document.getElementById("editor");
 const preview = document.getElementById("preview");
+const exportbutton = document.getElementById("export-as-md");
 
 editor.value = "";
 preview.textContent = "";
@@ -77,7 +78,21 @@ function inlineDesigns(text) {
     return text;
 }
 
+function ExportasMarkdown() {
+    const text = editor.value;
+    const blob = new Blob([text], {type: "text/markdown"});
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "document.md";
+    a.click()
+
+    URL.revokeObjectURL(url);
+}
+
 editor.addEventListener("input", previewUpdate);
 editor.addEventListener("input", renderMarkdown);
+exportbutton.addEventListener("click", ExportasMarkdown);
 
 previewUpdate();

@@ -45,3 +45,10 @@ textarea#editor {
     text-decoration-line: underline;
     text-decoration-color:rgb(79, 97, 67);
 }
+
+#export-as-md {
+    background-color:rgb(141, 102, 179);
+    border-radius: 10px;
+    height: 40px;
+    width: 180px;
+}
