@@ -12,49 +12,68 @@ function previewUpdate() {
 
 
 function renderMarkdown(text) {
-  const lines = text.split("\n");
-  let html = "";
-  let inList = false;
+    const lines = text.split("\n");
+    let html = "";
+    let inList = false;
+    let inOrderedList = false;
 
-  for (const line of lines) {
-    if (line.startsWith("- ")) {
-      if (!inList) {
-        html += "<ul>";
-        inList = true;
-      }
-      const itemText = line.slice(2);
-      html += `<li>${inlineDesigns(itemText)}</li>`;
-      continue;
+    for (const line of lines) {
+        if (line.startsWith("- ")) {
+            if (!inList) {
+                html += "<ul>";
+                inList = true;
+            }
+            const itemText = line.slice(2);
+            html += `<li>${inlineDesigns(itemText)}</li>`;
+            continue;
+        }
+
+        if (/^\d+\.\s/.test(line)) {
+            if (!inOrderedList) {
+                html += "<ol>";
+                inOrderedList = true;
+            }
+            const itemText = line.replace(/^\d+\.\s/, "");
+            html += `<li>${inlineDesigns(itemText)}</li>`;
+            continue;
+        }
+
+        if (inList) {
+            html += "</ul>";
+            inList = false;
+        }
+        if (inOrderedList) {
+            html += "</ol>";
+            inOrderedList = false;
+        }
+
+        if (line.startsWith("### ")) {
+            html += `<h3>${inlineDesigns(line.slice(4))}</h3>`;
+        } else if (line.startsWith("## ")) {
+            html += `<h2>${inlineDesigns(line.slice(3))}</h2>`;
+        } else if (line.startsWith("# ")) {
+            html += `<h1>${inlineDesigns(line.slice(2))}</h1>`;
+        } else if (line.trim() === "") {
+            html += "<br />";
+        } else {
+            html += `<p>${inlineDesigns(line)}</p>`;
+        }
     }
 
     if (inList) {
-      html += "</ul>";
-      inList = false;
+        html += "</ul>";
+    }
+    if (inOrderedList) {
+        html += "</ol>";
     }
 
-    if (line.startsWith("### ")) {
-      html += `<h3>${inlineDesigns(line.slice(4))}</h3>`;
-    } else if (line.startsWith("## ")) {
-      html += `<h2>${inlineDesigns(line.slice(3))}</h2>`;
-    } else if (line.startsWith("# ")) {
-      html += `<h1>${inlineDesigns(line.slice(2))}</h1>`;
-    } else if (line.trim() === "") {
-      html += "<br />";
-    } else {
-      html += `<p>${inlineDesigns(line)}</p>`;
-    }
-  }
-
-  if (inList) {
-    html += "</ul>";
-  }
-
-  return html;
+    return html;
 }
 
 function inlineDesigns(text) {
     text = text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
     text = text.replace(/\*(.+?)\*/g, "<em>$1</em>");    // tf does this do, inline suggestions doing whatever but it lowk seems to work
+    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
     return text;
 }
 
