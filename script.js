@@ -1,6 +1,8 @@
 const editor = document.getElementById("editor");
 const preview = document.getElementById("preview");
 const exportbutton = document.getElementById("export-as-md");
+const importbutton = document.getElementById("import-as-md");
+const importfile = document.getElementById("import-md");
 
 editor.value = "";
 preview.textContent = "";
@@ -91,8 +93,19 @@ function ExportasMarkdown() {
     URL.revokeObjectURL(url);
 }
 
+importfile.addEventListener("change", async () => {
+    const file = importfile.files[0];
+    if (!file) return;
+
+    const content = await file.text();
+    editor.value = content;
+    previewUpdate();
+})
+
 editor.addEventListener("input", previewUpdate);
 editor.addEventListener("input", renderMarkdown);
 exportbutton.addEventListener("click", ExportasMarkdown);
+importbutton.addEventListener("click", () => importfile.click());
+
 
 previewUpdate();
