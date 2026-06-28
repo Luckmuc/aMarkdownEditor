@@ -46,9 +46,26 @@ textarea#editor {
     text-decoration-color:rgb(79, 97, 67);
 }
 
-#export-as-md {
+#export-as-md, #import-as-md {
     background-color:rgb(141, 102, 179);
     border-radius: 10px;
     height: 40px;
     width: 180px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
+}
+
+.preview-container ul,
+.preview-container ol {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+#preview ul,
+#preview ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+#preview li {
+  margin: 0.2rem 0;
 }
